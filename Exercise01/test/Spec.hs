@@ -39,6 +39,10 @@ part2Tests
     , testCase "4th degree [2 marks]" (nth 4 "degree" @?= 'r')
     , testCase "7th degrees [2 marks]" (nth 7 "degrees" @?= 's')
     , testCase "1st among equals" (nth 1 [42] @?= 42)
+    , testCase "1st degree [2 marks]" (nth 1 "12345" @?= '1')
+    , testCase "2nd degree [2 marks]" (nth 2 "12345" @?= '2')
+    , testCase "3rd degree [2 marks]" (nth 3 "12345" @?= '3')
+    , testCase "4th degree [2 marks]" (nth 4 "12345" @?= '4')
     ]
 
 part3Tests :: TF.Test

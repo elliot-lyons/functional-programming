@@ -2,17 +2,17 @@ module Ex01 where
 import Data.Char (toLower)
 
 name, idno, username :: String
-name      =  "Myself, Me"  -- replace with your name
-idno      =  "01234567"    -- replace with your student id
-username  =  "memyselfi"   -- replace with your TCD username
+name      =  "Elliot Lyons"  -- replace with your name
+idno      =  "20333366"    -- replace with your student id
+username  =  "lyonse7"   -- replace with your TCD username
 
 
 declaration -- do not modify this
  = unlines
      [ ""
      , "@@@ This exercise is all my own work."
-     , "@@@ Signed: " ++ name
-     , "@@@ "++idno++" "++username
+     , "@@@ Signed: Elliot Lyons"
+     , "@@@ lyonse7"
      ]
 
 
@@ -25,8 +25,11 @@ if it is uppercase. All other characters are unchanged.
 It is imported should you want to use it.
 
 -}
+
 lower :: String -> String
-lower = undefined
+
+lower = map toLower
+
 
 {- Part 2
 
@@ -34,8 +37,10 @@ Write a function 'nth' that returns the nth element of a list.
 Hint: the test will answer your Qs
 
 -}
+
 nth :: Int -> [a] -> a
-nth = undefined
+
+nth j xs = xs !! (j - 1)
 
 
 {- Part 3
@@ -46,7 +51,6 @@ and returns the prefix they have in common.
 -}
 commonPfx :: Eq a => [a] -> [a] -> [a]
 commonPfx = undefined
-
 {- Part 4
 
 (TRICKY!) (VERY!)
