@@ -51,6 +51,16 @@ and returns the prefix they have in common.
 -}
 commonPfx :: Eq a => [a] -> [a] -> [a]
 
+commonPfx [] [] = []
+commonPfx (x:xs) [] = []
+commonPfx [] (y:ys) = []
+
+commonPfx (x:xs) (y:ys) | x == y = commonPfx (drop 1 xs) (drop 1 ys)
+                | x /= y = []
+
+
+
+
 -- commonPfx = []
 -- if nth 1 xs == nth 1 ys
 --        then commonPfx ++ nth 1 xs
@@ -76,13 +86,13 @@ commonPfx :: Eq a => [a] -> [a] -> [a]
 -- else 
 --        checkPfx = zs
 
-commonPfx = xs(0:countPfx 0 xs ys)               -- copy the 1st list passed from range 0 to where the two lists no longer prefixes
+-- commonPfx xs ys = xs(0:countPfx 0 xs ys)               -- copy the 1st list passed from range 0 to where the two lists no longer prefixes
 
 
-countPfx :: Int -> [a] -> [b] -> Int             -- returns the index of where the lists stop matching
+-- countPfx :: Int -> [a] -> [b] -> Int             -- returns the index of where the lists stop matching
 
-countPfx i xs ys | nth 1 xs == nth 1 ys  =  countPfx (i+1) (drop 1 xs) (drop 1 ys)
-                 | otherwise = i
+-- countPfx i xs ys | nth 1 xs == nth 1 ys  =  countPfx (i+1) (drop 1 xs) (drop 1 ys)
+--                  | otherwise = i
 
 
 
