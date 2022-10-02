@@ -1,5 +1,8 @@
 module Ex01 where
 import Data.Char (toLower)
+import Data.List (group)
+import Data.Bits (Bits(xor))
+import Control.Concurrent (yield)
 
 name, idno, username :: String
 name      =  "Elliot Lyons"  -- replace with your name
@@ -78,4 +81,40 @@ HINT: Don't worry about code efficiency
 
 -}
 runs :: Eq a => [a] -> [[a]]
-runs = undefined
+
+runs [] = []
+
+runs (x:xs) = beforeRuns(map (:[])((x:xs)))
+
+
+beforeRuns :: Eq a => [[a]] -> [[a]]
+
+beforeRuns [] = []
+
+beforeRuns(x:xs) | length x > 1 = beforeRuns(concat (map (:[]) (x:xs)))
+                 | otherwise = runsOne(x:xs)
+
+
+runsOne :: Eq a => [[a]] -> [[a]]
+
+runsOne [] = []
+
+runsOne(x) | length x == 1 = x
+
+runsOne (x:y:xs) | x == [] = ([]++runsOne(y:xs))
+                 | y == [] = x:[]
+                 | xs == [] = runsTwo(x:y:[])
+                 | elem (head (x)) y == True = runsOne((x++y):xs)
+                 | otherwise = (x:runsOne(y:xs))
+
+
+runsTwo :: Eq a => [[a]] -> [[a]]
+
+runsTwo [] = []
+
+runsTwo (x) | length x == 1 = x
+
+runsTwo (x:y)    | x == [] = []
+                 | y == [] = x:[]
+                 | elem (tail (x)) y == True = (x: tail y)  
+                 | otherwise = x:y
