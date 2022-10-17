@@ -62,48 +62,50 @@ eval :: EDict -> Expr -> Either String Double
 
 eval d (Val x) =  Right x
 eval d (Var e) = find d e
-eval d (Add x y) = add (eval d x)  (eval d y)         -- could do one function for all?
-eval d (Sub x y) = sub (eval d x)  (eval d y)
-eval d (Mul x y) = mul (eval d x)  (eval d y)
-eval d (Dvd x y) = dvd (eval d x)  (eval d y)
 
 eval d (Def x y z) = evaluate d x y z
+
+eval d (Add x y) = decide "add" (eval d x)  (eval d y)
+eval d (Sub x y) = decide "sub" (eval d x)  (eval d y)
+eval d (Mul x y) = decide "mul" (eval d x)  (eval d y)
+eval d (Dvd x y) = decide "dvd" (eval d x)  (eval d y)
+
+decide :: String -> Either String Double -> Either String Double -> Either String Double
+
+decide _ (Left x) _ =  Left x
+decide _  _ (Left y) = Left y
+
+decide k (Right x) (Right y) | k == "add" = add (Right x) (Right y)
+                             | k == "sub" = sub (Right x) (Right y)
+                             | k == "mul" = mul (Right x) (Right y)
+                             | k == "dvd" = dvd (Right x) (Right y)
+                             | otherwise = Left "Error"
+
+add :: Either String Double -> Either String Double -> Either String Double
+
+add (Right x) (Right y) = Right (x + y)
+
+
+sub :: Either String Double -> Either String Double -> Either String Double
+
+sub (Right x) (Right y) = Right (x - y)
+
+
+mul :: Either String Double -> Either String Double -> Either String Double
+
+mul (Right x) (Right y) = Right (x * y)
+
+
+dvd :: Either String Double -> Either String Double -> Either String Double
+
+dvd (Right x) (Right y) | y == 0 = Left "div by zero"
+                        | otherwise = Right  (x / y)
 
 
 evaluate :: EDict -> Id -> Expr -> Expr -> Either String Double
 
 evaluate d x (Val y) z = eval (define d x y) z
 evaluate d x y z = eval d y
-
-
-add :: Either String Double -> Either String Double -> Either String Double
-
-add (Left x) _ =  Left x
-add (_) (Left y) = Left y
-
-add (Right x) (Right y) = Right (x + y)
-
-sub :: Either String Double -> Either String Double -> Either String Double
-
-sub (Left x) _ =  Left x
-sub (_) (Left y) = Left y
-
-sub (Right x) (Right y) = Right (x - y)
-
-mul :: Either String Double -> Either String Double -> Either String Double
-
-mul (Left x) _ =  Left x
-mul (_) (Left y) = Left y
-
-mul (Right x) (Right y) = Right (x * y)
-
-dvd :: Either String Double -> Either String Double -> Either String Double
-
-dvd (Left x) _ =  Left x
-dvd (_) (Left y) = Left y
-
-dvd (Right x) (Right y) | y == 0 = Left "div by zero"
-                        | otherwise = Right  (x / y)
 
 -- Part 2 : Expression Laws -- (15 test marks, worth 15 Exercise Marks) --------
 
@@ -149,12 +151,3 @@ law4 (Mul (Add x y) (Sub j k)) | (x == j) && (y == k) = Just (Sub (Mul x j) (Mul
                                | otherwise = Nothing 
 
 law4 x = Nothing
-
-expr1 :: Expr -> Expr -> Expr
-
-expr1 x y = Add x y
-
-
-expr2 :: Expr -> Expr -> Expr
-
-expr2 x y = Sub x y
