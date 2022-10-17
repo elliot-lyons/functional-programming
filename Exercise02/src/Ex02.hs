@@ -61,15 +61,20 @@ v42 = Val 42 ; j42 = Just v42
 eval :: EDict -> Expr -> Either String Double
 
 eval d (Val x) =  Right x
-
 eval d (Var e) = find d e
-
 eval d (Add x y) = add (eval d x)  (eval d y)         -- could do one function for all?
 eval d (Sub x y) = sub (eval d x)  (eval d y)
 eval d (Mul x y) = mul (eval d x)  (eval d y)
 eval d (Dvd x y) = dvd (eval d x)  (eval d y)
-eval _ (Def e z k) = Right 55.1
-         
+
+eval d (Def x y z) = evaluate d x y z
+
+
+evaluate :: EDict -> Id -> Expr -> Expr -> Either String Double
+
+evaluate d x (Val y) z = eval (define d x y) z
+evaluate d x y z = eval d y
+
 
 add :: Either String Double -> Either String Double -> Either String Double
 
@@ -124,16 +129,32 @@ There are many, many laws of algebra that apply to our expressions, e.g.,
 
 -- x * y            =   y * z        Law 1
 law1 :: Expr -> Maybe Expr
-law1 e = error "law1 NYI"
+
+law1 (Mul x y) = Just (Mul y x)
+law1 x = Nothing
 
 -- (x + y) + z      =   x + (y + z)  Law 2
 law2 :: Expr -> Maybe Expr
-law2 e = error "law2 NYI"
+law2 (Add (Add x y) z) = Just (Add x (Add y z)) 
+law2 x = Nothing
 
 -- (x / y) / z      =   x / (y * z)  Law 3
 law3 :: Expr -> Maybe Expr
-law3 e = error "law3 NYI"
+law3 (Dvd (Dvd x y) z) = Just (Dvd x (Mul y z))
+law3 x = Nothing
 
 -- (x + y)*(x - y)  =  x*x - y*y     Law 4
 law4 :: Expr -> Maybe Expr
-law4 e = error "law4 NYI"
+law4 (Mul (Add x y) (Sub j k)) | (x == j) && (y == k) = Just (Sub (Mul x j) (Mul y k))
+                               | otherwise = Nothing 
+
+law4 x = Nothing
+
+expr1 :: Expr -> Expr -> Expr
+
+expr1 x y = Add x y
+
+
+expr2 :: Expr -> Expr -> Expr
+
+expr2 x y = Sub x y
